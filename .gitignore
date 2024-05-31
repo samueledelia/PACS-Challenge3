@@ -1,0 +1,45 @@
+.vscode
+
+# makefile aux
+*.dep
+
+# backup files
+*~
+
+# Prerequisites
+*.d
+
+# simulation results
+*.dat
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+main
+*.s
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
