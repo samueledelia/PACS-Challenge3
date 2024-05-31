@@ -30,8 +30,8 @@
         Mesh (double x0_, double xn_, double y0_, double yn_, size_t nx_, size_t ny_);
         Mesh (double x0_, double xn_, double y0_, double yn_, double hx_, double hy_);
         // Constructors given top right and bottom left points and others parameters
-        Mesh2D (const Point & tr, const Point & bl, size_t nx_, size_t ny_);
-        Mesh2D (const Point & tr, const Point & bl, double hx_, double hy_);
+        Mesh (const Point & tr, const Point & bl, size_t nx_, size_t ny_);
+        Mesh (const Point & tr, const Point & bl, double hx_, double hy_);
 
 
         // getters
@@ -113,7 +113,7 @@ Mesh::Mesh(double x0_, double xn_, double y0_, double yn_, size_t nx_, size_t ny
     };
 
     Mesh::Mesh(double x0_, double xn_, double y0_, double yn_, double hx_, double hy_) : 
-                Mesh2D(x0_, xn_, y0_, yn_, static_cast<size_t>(std::ceil((xn - x0) / hx_)+1), static_cast<size_t>(std::ceil((yn - y0) / hy_)+1)) {
+                Mesh(x0_, xn_, y0_, yn_, static_cast<size_t>(std::ceil((xn - x0) / hx_)+1), static_cast<size_t>(std::ceil((yn - y0) / hy_)+1)) {
         
         if (std::fmod((xn - x0),hx_) >= std::numeric_limits<double>::epsilon() ){
             std::cout << "Cannot evenly divide with given x spacing, correction occurred on spacing from " << hx_ << "---> " << hx << std::endl;

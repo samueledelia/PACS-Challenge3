@@ -1,0 +1,21 @@
+{
+    "mesh": {
+        "minX": 0,
+        "minY": 0,
+        "maxX": 1,
+        "maxY": 1,
+        "nx": 256,
+        "ny": 256,
+        "hx": 0.1,
+        "hy": 0.1
+    },
+    "option": {
+        "iteration": 100000,
+        "tolerance": 1e-6
+    },
+    "function": {
+        "f": "8*_pi^2*sin(2*_pi*x)*sin(2*_pi*y)",
+        "fbound" : "0*x+0*y",
+        "exact" : "sin(2*_pi*x)*sin(2*_pi*y)"
+    }
+}
