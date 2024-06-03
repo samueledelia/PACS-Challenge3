@@ -1,25 +1,58 @@
-CXX      = mpicxx
-CXXFLAGS = -std=c++20 -fopenmp 
-CPPFLAGS = -O0 -Wall -I./include -Wno-conversion-null -Wno-deprecated-declarations 
-SOURCE_DIR=./src/ #set the location of source file
-VPATH=$(SOURCE_DIR)
-SRCS=$(join $(dir $(SOURCE_DIR)),$(notdir *.cpp)) #source files
-OBJS= $(SRCS:%.cpp=%.o) #object files
+# Variable for path to PACS Examples
+PACS_ROOT = /mnt/c/Users/samue/OneDrive/Desktop/Samuele/Uni/V_Anno/PACS/pacs-examples #/Examples
 
-EXEC= main #I want one executable called "main"
-.phony= clean 
-.DEFAULT_GOAL = all 
+# Path for reaching libraries and header provided by pacs-Examples repository
+EXAMPLES_INCLUDE = ${PACS_ROOT}/include
+EXAMPLES_LIB = ${PACS_ROOT}/lib
+
+# Path for personal header file
+MY_INCLUDE = include
+
+# Adding run time search path
+ADDITIONAL_PATH = 
+
+# Compiler variables
+CXXFLAGS = -std=c++20 -O3 -fPIC 
+CPPFLAGS = -DNDEBUG -I${EXAMPLES_INCLUDE} -I${MY_INCLUDE}
+LDFLAGS = -L. -Wl,-rpath=$(EXAMPLES_LIB) -L${EXAMPLES_LIB}
+LDLIBS = -lmpi -lpacs -lmuparser 
+
+# Parallel compiler variables
+P_CXX = mpic++
+P_CXXFLAGS = -fopenmp $(CXXFLAGS)
+P_CPPFLAGS = $(CPPFLAGS)
+P_LDLIBS = -lmuparser -lmpi
+
+# Files
+# Source file
+SRCS = $(wildcard src/*.cpp)
+# Object files from sources
+OBJS = $(SRCS:.cpp=.o)
+# All headers
+HEADS = $(wildcard ${MY_INCLUDE}/*.hpp)
+# Executable names
+EXEC = main
+P_EXEC = main_parallel
+
+.PHONY: all clean parallel
+
+# Compiling routine
 all: $(EXEC)
 
-$(OBJS): $(SRCS) 
-	$(CXX) -g -c $(CXXFLAGS) $(CPPFLAGS) $(SRCS)
-	mv *.o ./src
-	mkdir -p results
 $(EXEC): $(OBJS)
-	$(CXX) -g $(CXXFLAGS) $(OBJS) -o $(EXEC)
+	$(CXX) $(LDFLAGS) $(OBJS) -o $(EXEC) $(LDLIBS)
+
+%.o: %.cpp $(HEADS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@ -I$(MY_INCLUDE)
+
+# Parallel compiling routine
+parallel: $(P_EXEC)
+
+$(P_EXEC): $(OBJS)
+	$(P_CXX) $(LDFLAGS) $(OBJS) -o $(P_EXEC) $(LDLIBS) $(P_LDLIBS)
+
+%.o: %.cpp $(HEADS)
+	$(P_CXX) $(P_CPPFLAGS) $(P_CXXFLAGS) -c $< -o $@ -I$(MY_INCLUDE)
 
 clean:
-	$(RM) *.o
-	$(RM) $(OBJS)
-	$(RM) $(EXEC)
-	$(RM) -r ./doc/html ./doc/latex
+	$(RM) $(OBJS) $(EXEC) $(P_EXEC)

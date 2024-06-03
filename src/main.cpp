@@ -4,8 +4,6 @@
 #include "json.hpp"
 #include <iostream>
 #include <mpi.h>
-#include "chrono.hpp"
-
 
 // Parameters for mesh, function and method option
 struct Parameters{

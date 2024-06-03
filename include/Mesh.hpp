@@ -5,7 +5,8 @@
 
 #include <iostream>
 #include <iomanip>
-
+#include <vector>
+#include <cmath>
 
     /**
      * @brief Grid mesh class on rectangular domain
@@ -46,7 +47,7 @@
         inline double gethy() const { return hy; }
 
         // Print domain four vertices 
-        friend std::ostream& operator<<(std::ostream& os, const Domain2D & domain);
+        friend std::ostream& operator<<(std::ostream& os, const Mesh & mesh);
 
 
 
@@ -88,7 +89,7 @@
 
 Mesh::Mesh(double x0_, double xn_, double y0_, double yn_, size_t nx_, size_t ny_) : nx{nx_},ny{ny_} { 
 
-        if(isValid(x0_, xn_, y0_, yn_)){ 
+        if(check_entries(x0_, xn_, y0_, yn_)){ 
             x0 = x0_;
             xn = xn_;
             y0 = y0_;
@@ -101,12 +102,12 @@ Mesh::Mesh(double x0_, double xn_, double y0_, double yn_, size_t nx_, size_t ny
         hx = (xn-x0)/(nx-1); 
         hy = (yn-y0)/(ny-1);
 
-        coordinate.reserve(nx*ny); // Preallocate space to get a faster code!
+        grid.reserve(nx*ny); // Preallocate space to get a faster code!
 
         // populate points grid
         for(double y = y0 ; y <= yn ; y+=hy){
             for(double x = x0 ; x <= xn ; x+=hx){
-                coordinate.emplace_back(x,y);
+                grid.emplace_back(x,y);
             }
         }
 
@@ -141,8 +142,8 @@ std::ostream& operator<<(std::ostream& os, const Mesh & mesh) {
 
         std::cout << std::setw(3);
 
-        for(int i = mesh.ny-1 ; i >= 0 ; --i){
-            for(int j = 0 ; j < mesh.nx ; ++j){
+        for(int i = mesh.getny()-1 ; i >= 0 ; --i){
+            for(int j = 0 ; j < mesh.getnx() ; ++j){
                 std::cout << "(" << mesh(i,j).getX() << "," <<  mesh(i,j).getY() << ") " << std::setw(3);
             }
             std::cout << std::endl;

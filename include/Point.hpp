@@ -1,8 +1,7 @@
 #ifndef POINT_HPP
 #define POINT_HPP
 
-
-    class Point{
+class Point{
 
     private:
 
@@ -18,6 +17,6 @@
         inline double getX() const { return x; }
         inline double getY() const { return y; }
 
-    };
+};
     
 #endif

@@ -39,7 +39,7 @@
 
     public:
         // Jocobi method constructor
-        Jacobi(const Mesh2D & mesh_, const std::string & function, unsigned int nMax_, double tol_ , const std::string & bCond = "0");
+        Jacobi(const Mesh & mesh_, const std::string & function, unsigned int nMax_, double tol_ , const std::string & bCond = "0");
 
         // Solver method
         std::vector<std::vector<double>> solve();
@@ -58,16 +58,16 @@
         // Tie x,y variable to the parser and set its expression
         void setParser(mu::Parser & parser, const std::string & expr);
         
-    };
+};
     
 
-    Jacobi::Jacobi(const Mesh & mesh_, const std::string & function, unsigned int nMax_, double tol_, const std::string & bCond) : mesh{mesh_},nMax{nMax_},tol{tol_} {
+Jacobi::Jacobi(const Mesh & mesh_, const std::string & function, unsigned int nMax_, double tol_, const std::string & bCond) : mesh{mesh_},nMax{nMax_},tol{tol_} {
         
         /// set number of points and spacing
-        nx = mesh.getNx();
-        hx = mesh.getHx();
-        ny = mesh.getNy();
-        hy = mesh.getHy();
+        nx = mesh.getnx();
+        hx = mesh.gethx();
+        ny = mesh.getny();
+        hy = mesh.gethy();
 
         /// define parsers expression
         setParser(this->f,function);
@@ -91,7 +91,7 @@
             std::cerr << "Error: " << e.GetMsg() << std::endl;
 
         }
-    };
+};
 
     void Jacobi::initSolution(){
 
@@ -138,7 +138,7 @@
             e = norm(newSol,sol,std::max(hx,hy)); // get the norm of the increment of updated solution, use h as th maximum between the spacings
         }
 
-        generateVTK(sol,mesh.getMinX(),mesh.getMinY(),nx,ny,hx,hy); // generate VTK file
+        generateVTK(sol,mesh.getx0(),mesh.gety0(),nx,ny,hx,hy); // generate VTK file
 
         return sol;
 
@@ -161,10 +161,10 @@
         MPI_Comm_size(MPI_COMM_WORLD, &size);
 
         // set number of points and spacing
-        size_t nx = mesh.getNx();
-        double hx = mesh.getHx();
-        size_t ny = mesh.getNy();
-        double hy = mesh.getHy();
+        size_t nx = mesh.getnx();
+        double hx = mesh.gethx();
+        size_t ny = mesh.getny();
+        double hy = mesh.gethy();
 
         // if not at least two row per process
         if(ny / size < 2)
@@ -412,7 +412,7 @@
     };
 
     // compare the given solution vectorial form to the exact one wrt l2 norm
-    void compareSolution(const Mesh2D & mesh, const std::vector<double> & solution, const std::string & exact, int nProcess) {
+    void compareSolution(const Mesh & mesh, const std::vector<double> & solution, const std::string & exact, int nProcess) {
        
        mu::Parser f; 
 
@@ -437,8 +437,8 @@
         }
 
         // generate discrete solution using the exact result
-        size_t nx = mesh.getNx();
-        size_t ny = mesh.getNy();
+        size_t nx = mesh.getnx();
+        size_t ny = mesh.getny();
 
         std::vector<double> exacSol(nx*ny,0);
         for(size_t i = 0 ; i < ny ; ++i){
@@ -452,8 +452,7 @@
             }
         }
 
-        double error = norm(solution, exacSol, std::max(mesh.getHx(), mesh.getHy()), ny, nx); // error between exact and computed solution
-
+        double error = norm(solution, exacSol, std::max(mesh.gethx(), mesh.gethy()), ny, nx); // error between exact and computed solution
         std::cout << "Error using " << nx << " point along X, " << ny << " points along Y and " << nProcess << " processes: " << error << std::endl;
 
     };
@@ -469,7 +468,6 @@
         compareSolution(mesh, vecSol, exact, nProcess);       
 
     };
-
 
 
 #endif

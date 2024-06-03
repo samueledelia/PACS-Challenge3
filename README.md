@@ -12,13 +12,13 @@ $$ -\Delta u = f(x), \quad \text{in} \; \quad \Omega = (0, 1)^2 $$
 
 with the following boundary conditions:
 
-$$ u = 0, \quad \text{on} \; x = 0, $$
+$$ u = 0, \quad \text{on} \quad {x = 0} $$
 
-$$ u = 0, \quad \text{on} \; x = 1, $$
+$$ u = 0, \quad \text{on} \quad {x = 1} $$
 
-$$ u = 0, \quad \text{on} \; y = 0, $$
+$$ u = 0, \quad \text{on} \quad {y = 0} $$
 
-$$ u = 0, \quad \text{on} \; y = 1, $$
+$$ u = 0, \quad \text{on} \quad {y = 1} $$
 
 where the solution $u$ is represented as a dense matrix $U$ of size $n\times n$.
 
